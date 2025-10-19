@@ -243,7 +243,7 @@ def train(csv_path, epochs=50, batch_size=100, lr=1e-2):
 def predict(model, scaler, test_path, output_path, feature_cols):
     raw = pd.read_csv(test_path)
 
-    # 1️⃣ Noise correction first
+ 
     filtered = raw.copy()
     if "80000" in filtered.columns:
         plt.figure(figsize=(12, 5))
@@ -260,7 +260,7 @@ def predict(model, scaler, test_path, output_path, feature_cols):
     if "Temp" in filtered.columns:
         filtered = filtered.drop(columns=["Temp"])
 
-    # 2️⃣ Temperature correction second (visuals as original)
+
     if "80000" in filtered.columns:
         plt.figure(figsize=(12, 5))
         plt.plot(filtered["80000"].values, label="Post Noise + Temp Correction 80000 Hz", linewidth=2)
@@ -336,3 +336,4 @@ predict(
     feature_cols=features
 )
 print("end")
+
