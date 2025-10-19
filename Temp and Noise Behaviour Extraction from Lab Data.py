@@ -41,18 +41,15 @@ noise_levels = {}
 for c in sorted_freq_cols:
     phi_lab = lab_df[c].values.astype(float)
 
-    # 1️⃣ Linear regression: lab phase vs conductivity
     X_sigma = sm.add_constant(sigma_lab)
     model_sigma = sm.OLS(phi_lab, X_sigma).fit()
     phi_sigma_pred = model_sigma.predict(X_sigma)
 
-    # 2️⃣ Residual vs temperature (cubic polynomial)
     residuals = phi_lab - phi_sigma_pred
     X_temp_poly = np.column_stack([temp_shifted, temp_shifted**2, temp_shifted**3])
     X_temp_poly = sm.add_constant(X_temp_poly)
     model_temp = sm.OLS(residuals, X_temp_poly).fit()
 
-    # 3️⃣ Noise level (std of residual after temp poly)
     final_residuals = residuals - model_temp.predict(X_temp_poly)
     noise_std = np.std(final_residuals) * NOISE_SCALE
 
@@ -78,5 +75,6 @@ with open(OUT_PARAMS, "w") as f:
         "temp_models": temp_models,
         "noise_levels": noise_levels
     }, f, indent=2)
+
 
 print(f"Models saved to {OUT_PARAMS}")
